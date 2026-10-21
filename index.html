@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Artigo técnico sobre normalização de banco de dados, formas normais e exemplos SQL para PostgreSQL.">
+  <title>Normalização de Banco de Dados — Artigo Técnico</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <nav aria-label="Navegação principal">
+    <a href="#problema">Problema</a><a href="#conceito">Conceito</a><a href="#formas">Formas normais</a>
+    <a href="#exemplo">Exemplo</a><a href="#sql">SQL</a><a href="#referencias">Referências</a>
+  </nav>
+</header>
+<main>
+  <section class="hero">
+    <p class="eyebrow">BANCO DE DADOS • ARTIGO TÉCNICO</p>
+    <h1>Normalização de Banco de Dados</h1>
+    <p class="lead">Como organizar informações em tabelas relacionadas para reduzir repetições e manter a consistência dos dados.</p>
+    <p class="small"><strong>Publicado em:</strong> [DD/MM/AAAA] · <strong>Última revisão:</strong> [DD/MM/AAAA]</p>
+  </section>
+
+  <section id="problema">
+    <h2>1. Por que organizar um banco de dados?</h2>
+    <p>Imagine uma loja virtual que registra clientes e seus pedidos. Se todas as informações forem colocadas em uma única tabela, o nome e o e-mail de um cliente poderão aparecer repetidos em várias linhas. Isso aumenta a chance de inconsistências e torna alterações mais trabalhosas.</p>
+    <p>A normalização ajuda a organizar essas informações em tabelas com responsabilidades bem definidas. Neste artigo, vamos usar um exemplo simples de loja virtual para entender o conceito e conhecer as três primeiras formas normais.</p>
+  </section>
+
+  <section id="conceito">
+    <h2>2. O que é normalização?</h2>
+    <p><strong>Normalização</strong> é o processo de organizar os dados de um banco de dados em tabelas relacionadas, seguindo regras chamadas formas normais. O objetivo é reduzir repetições desnecessárias e evitar problemas na inclusão, alteração e exclusão de registros.</p>
+    <div class="note"><strong>Em palavras simples:</strong> em vez de guardar os mesmos dados em vários lugares, cada informação fica preferencialmente no local adequado e é relacionada às demais por meio de identificadores, como chaves primárias e estrangeiras.</div>
+    <p>A normalização não significa criar o maior número possível de tabelas. A estrutura deve representar corretamente as regras do sistema e continuar compreensível e prática para consultar.</p>
+  </section>
+
+  <section id="formas">
+    <h2>3. As três primeiras formas normais</h2>
+    <h3>3.1. Primeira Forma Normal (1FN)</h3>
+    <p>Uma tabela está na 1FN quando cada campo contém um valor único e indivisível para o contexto definido, sem listas de valores dentro de uma mesma célula e sem grupos repetidos de colunas.</p>
+    <p><strong>Exemplo:</strong> em vez de colocar “ana@email.com, ana.trabalho@email.com” na mesma coluna de e-mail, cada valor deve ser representado de maneira adequada ao modelo. Se uma pessoa puder ter vários e-mails, eles podem ser armazenados em uma tabela relacionada.</p>
+
+    <h3>3.2. Segunda Forma Normal (2FN)</h3>
+    <p>Uma tabela está na 2FN quando está na 1FN e todos os atributos que não fazem parte de uma chave dependem da chave completa — não apenas de uma parte dela. Essa regra é especialmente importante quando a chave primária é composta por mais de uma coluna.</p>
+    <p><strong>Exemplo:</strong> em uma tabela de itens de pedido, o nome do produto depende do produto, não da combinação entre pedido e produto. Por isso, os dados do produto devem ficar em uma tabela própria.</p>
+
+    <h3>3.3. Terceira Forma Normal (3FN)</h3>
+    <p>Uma tabela está na 3FN quando está na 2FN e os atributos que não são chave não dependem de outros atributos que também não são chave. Em termos práticos, evitamos guardar em uma tabela informações que pertencem a outra entidade.</p>
+    <p><strong>Exemplo:</strong> se cada CEP ou código de departamento determina uma descrição específica, essa descrição pode precisar ficar em uma tabela própria, relacionada pelo código, conforme as regras reais do sistema.</p>
+    <div class="note"><strong>Resumo:</strong> 1FN organiza os valores; 2FN elimina dependências parciais de chaves compostas; 3FN elimina dependências transitivas entre atributos que não são chave.</div>
+  </section>
+
+  <section id="exemplo">
+    <h2>4. Exemplo prático: clientes e pedidos</h2>
+    <p>Uma estrutura organizada mantém os dados dos clientes separados dos dados dos pedidos. Cada cliente possui um identificador único, e cada pedido guarda esse identificador para indicar quem fez a compra.</p>
+    <figure>
+      <div class="schema" role="img" aria-label="Diagrama: clientes se relaciona com pedidos. Um cliente pode ter vários pedidos.">
+        <div class="tablebox"><strong>clientes</strong><span>id_cliente (PK)</span><span>nome</span><span>email</span></div>
+        <div class="arrow" aria-hidden="true">1 ───── N</div>
+        <div class="tablebox"><strong>pedidos</strong><span>id_pedido (PK)</span><span>id_cliente (FK)</span><span>data_pedido</span><span>valor_total</span></div>
+      </div>
+      <figcaption>Figura 1 — Modelo normalizado: um cliente pode estar relacionado a vários pedidos. PK identifica um registro; FK estabelece o relacionamento com outra tabela.</figcaption>
+    </figure>
+    <p>Essa separação evita repetir o nome e o e-mail do cliente em cada pedido. Se o e-mail mudar, basta atualizar o registro do cliente. Os pedidos continuam ligados ao mesmo cliente por meio de <code>id_cliente</code>.</p>
+
+    <h3>Por que isso ajuda?</h3>
+    <div class="columns">
+      <div><h3>Sem organização adequada</h3><ul><li>Nome e e-mail podem se repetir em muitas linhas.</li><li>Uma atualização pode ser esquecida em algum registro.</li><li>Excluir um pedido pode apagar acidentalmente a única cópia de uma informação.</li></ul></div>
+      <div><h3>Com normalização</h3><ul><li>Os dados do cliente ficam em um único lugar.</li><li>As chaves relacionam as tabelas.</li><li>Restrições ajudam a manter a integridade dos registros.</li></ul></div>
+    </div>
+  </section>
+
+  <section id="sql">
+    <h2>5. Exemplo de código SQL</h2>
+    <p>O exemplo utiliza <strong>PostgreSQL 18</strong> como referência de SGBD (Sistema Gerenciador de Banco de Dados). Os dados são fictícios e os comandos podem ser adaptados a outros bancos compatíveis.</p>
+    <h3>5.1. Criando tabelas relacionadas</h3>
+    <pre><code><span class="comment">-- Tabela que guarda os dados de cada cliente</span>
+<span class="keyword">CREATE TABLE</span> clientes (
+    id_cliente <span class="type">INTEGER</span> <span class="keyword">PRIMARY KEY</span>,
+    nome <span class="type">VARCHAR</span>(100) <span class="keyword">NOT NULL</span>,
+    email <span class="type">VARCHAR</span>(150) <span class="keyword">UNIQUE NOT NULL</span>
+);
+
+<span class="comment">-- Tabela que guarda os pedidos e referencia o cliente</span>
+<span class="keyword">CREATE TABLE</span> pedidos (
+    id_pedido <span class="type">INTEGER</span> <span class="keyword">PRIMARY KEY</span>,
+    id_cliente <span class="type">INTEGER NOT NULL REFERENCES</span> clientes(id_cliente),
+    data_pedido <span class="type">DATE NOT NULL</span>,
+    valor_total <span class="type">NUMERIC</span>(10,2) <span class="keyword">NOT NULL CHECK</span> (valor_total >= 0)
+);
+
+<span class="keyword">INSERT INTO</span> clientes VALUES
+(1, 'Ana Souza', 'ana@example.com'),
+(2, 'Bruno Lima', 'bruno@example.com');
+
+<span class="keyword">INSERT INTO</span> pedidos VALUES
+(101, 1, '2026-09-10', 150.00),
+(102, 1, '2026-09-12', 89.90),
+(103, 2, '2026-09-13', 210.00);</code></pre>
+
+    <h3>5.2. Consultando os dados relacionados</h3>
+    <pre><code><span class="comment">-- Combina pedidos e clientes usando a chave estrangeira</span>
+<span class="keyword">SELECT</span>
+    p.id_pedido,
+    c.nome,
+    p.data_pedido,
+    p.valor_total
+<span class="keyword">FROM</span> pedidos p
+<span class="keyword">JOIN</span> clientes c
+    <span class="keyword">ON</span> c.id_cliente = p.id_cliente
+<span class="keyword">ORDER BY</span> p.data_pedido;</code></pre>
+    <p><a href="exemplo.sql">Abrir o script SQL completo no repositório</a> (o arquivo deve ser publicado junto desta página).</p>
+    <div class="note warning"><strong>Atenção:</strong> as chaves primárias e estrangeiras ajudam a identificar registros e manter os relacionamentos válidos. A estrutura final deve ser planejada de acordo com as regras reais do negócio; o exemplo é didático e simplificado.</div>
+  </section>
+
+  <section id="cuidados">
+    <h2>6. Vantagens e cuidados</h2>
+    <div class="columns">
+      <div><h3>Vantagens</h3><ul><li>Reduz repetição desnecessária de dados.</li><li>Diminui o risco de inconsistências durante atualizações.</li><li>Ajuda a evitar anomalias de inserção, alteração e exclusão.</li><li>Deixa mais claras as relações entre entidades.</li></ul></div>
+      <div><h3>Pontos de atenção</h3><ul><li>Consultas podem precisar relacionar várias tabelas.</li><li>O modelo precisa refletir corretamente as regras do sistema.</li><li>É importante escolher chaves e restrições adequadas.</li><li>O desempenho deve ser avaliado com consultas e dados reais.</li></ul></div>
+    </div>
+    <ol>
+      <li>Identificar as entidades e as regras do negócio.</li>
+      <li>Definir chaves primárias e relacionamentos.</li>
+      <li>Verificar se os atributos dependem das chaves corretamente.</li>
+      <li>Aplicar as formas normais necessárias ao cenário.</li>
+      <li>Testar as consultas e validar a integridade dos dados.</li>
+    </ol>
+  </section>
+
+  <section id="conclusao">
+    <h2>7. Conclusão</h2>
+    <p>A normalização é uma técnica importante no projeto de bancos de dados porque ajuda a organizar as informações, reduzir duplicações e manter os dados consistentes. As três primeiras formas normais orientam a estruturação de tabelas e suas dependências. Embora uma estrutura normalizada possa exigir relacionamentos entre tabelas nas consultas, ela oferece uma base organizada e confiável para muitos sistemas. A melhor solução depende das regras do negócio, da integridade necessária e dos requisitos de desempenho.</p>
+  </section>
+
+  <section id="links">
+    <h2>8. Links recomendados para leitura</h2>
+    <ul class="link-list">
+      <li><a href="https://www.ibm.com/think/topics/database-normalization">IBM — Database normalization</a><p>Introdução aos conceitos e objetivos da normalização de bancos de dados.</p></li>
+      <li><a href="https://www.postgresql.org/docs/18/ddl-constraints.html">PostgreSQL — Constraints</a><p>Documentação sobre chaves primárias, chaves estrangeiras e outras restrições.</p></li>
+      <li><a href="https://www.postgresql.org/docs/18/sql-createtable.html">PostgreSQL — CREATE TABLE</a><p>Como criar tabelas, definir colunas e declarar restrições.</p></li>
+      <li><a href="https://www.postgresql.org/docs/18/sql-select.html">PostgreSQL — SELECT</a><p>Documentação do comando usado para consultar e combinar dados.</p></li>
+    </ul>
+  </section>
+
+  <section id="referencias">
+    <h2>9. Referências</h2>
+    <p>As referências abaixo apoiam as explicações sobre normalização, restrições e consultas. O exemplo foi elaborado para fins didáticos.</p>
+    <ul class="references">
+      <li>IBM. <em>Database normalization.</em> Disponível em: <a href="https://www.ibm.com/think/topics/database-normalization">ibm.com/think/topics/database-normalization</a>. Acesso em: [preencher data da consulta].</li>
+      <li>POSTGRESQL GLOBAL DEVELOPMENT GROUP. <em>PostgreSQL 18 Documentation: Constraints.</em> Disponível em: <a href="https://www.postgresql.org/docs/18/ddl-constraints.html">postgresql.org/docs/18/ddl-constraints.html</a>. Acesso em: [preencher data da consulta].</li>
+      <li>POSTGRESQL GLOBAL DEVELOPMENT GROUP. <em>PostgreSQL 18 Documentation: CREATE TABLE.</em> Disponível em: <a href="https://www.postgresql.org/docs/18/sql-createtable.html">postgresql.org/docs/18/sql-createtable.html</a>. Acesso em: [preencher data da consulta].</li>
+      <li>POSTGRESQL GLOBAL DEVELOPMENT GROUP. <em>PostgreSQL 18 Documentation: SELECT.</em> Disponível em: <a href="https://www.postgresql.org/docs/18/sql-select.html">postgresql.org/docs/18/sql-select.html</a>. Acesso em: [preencher data da consulta].</li>
+    </ul>
+  </section>
+<footer>
+    <p><strong>Licença:</strong> CC BY 4.0 para o conteúdo original, exceto materiais de terceiros citados.</p>
+    <p><strong>Contato:</strong> [e-mail acadêmico ou contato profissional, se autorizado].</p>
+    <p><strong>Publicado em:</strong> [DD/MM/AAAA] · <strong>Última revisão:</strong> [DD/MM/AAAA].</p>
+    <p><strong>Repositório:</strong> <a href="[URL_DO_REPOSITORIO]">[inserir URL pública do GitHub]</a>.</p>
+  </footer>
+</main>
+</body>
+</html>
