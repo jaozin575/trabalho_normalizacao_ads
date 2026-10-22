@@ -1,0 +1,58 @@
+* { box-sizing: border-box; }
+:root {
+  color-scheme: dark;
+  --verde-escuro: #103D30;
+  --verde: #187653;
+  --rosa: #EC1680;
+  --rosa-claro: #FF9CCC;
+  --rosa-quase-branco: #FFF3F8;
+  --bg: var(--verde-escuro);
+  --panel: #187653;
+  --line: #FF9CCC;
+  --text: var(--rosa-quase-branco);
+  --muted: #FFF3F8;
+  --accent: var(--rosa);
+}
+html { scroll-behavior: smooth; }
+body { margin:0; background:var(--bg); color:var(--text); font:16px/1.7 system-ui,-apple-system,"Segoe UI",sans-serif; }
+.top { position:sticky; top:0; background:#103D30f2; border-bottom:1px solid var(--rosa-claro); z-index:5; }
+nav { max-width:980px; margin:auto; display:flex; gap:18px; padding:14px 22px; overflow-x:auto; white-space:nowrap; }
+a { color:var(--rosa-claro); }
+nav a { font-size:.88rem; text-decoration:none; }
+nav a:hover { color:var(--rosa-quase-branco); text-decoration:underline; text-decoration-color:var(--rosa); text-decoration-thickness:2px; }
+main { max-width:900px; margin:0 auto; padding:38px 24px 70px; }
+section { padding:28px 0; border-bottom:1px solid var(--rosa-claro); scroll-margin-top:70px; }
+.hero { padding:44px 0 36px; }
+.eyebrow { color:var(--rosa); font-size:.78rem; font-weight:800; letter-spacing:.12em; }
+h1 { font-size:clamp(2.2rem,6vw,3.6rem); line-height:1.08; letter-spacing:-.04em; margin:.2em 0; color:var(--rosa-quase-branco); }
+h2 { font-size:1.65rem; line-height:1.25; color:var(--rosa-claro); }
+h3 { font-size:1.1rem; color:var(--rosa-quase-branco); }
+p, li { color:var(--muted); }
+strong { color:var(--rosa-quase-branco); }
+.lead { font-size:1.18rem; max-width:720px; }
+.small { font-size:.88rem; }
+.note { padding:16px 18px; border-left:4px solid var(--rosa); background:var(--verde); border-radius:0 8px 8px 0; margin:22px 0; }
+.warning { border-left-color:var(--rosa-claro); background:#187653; }
+.schema { display:flex; align-items:center; justify-content:center; gap:22px; padding:22px; background:var(--panel); border:1px solid var(--rosa-claro); border-radius:12px; flex-wrap:wrap; }
+.tablebox { display:flex; flex-direction:column; min-width:210px; border:1px solid var(--rosa-claro); border-radius:7px; overflow:hidden; background:var(--verde-escuro); }
+.tablebox strong { background:var(--rosa); color:var(--rosa-quase-branco); padding:9px 12px; }
+.tablebox span { padding:7px 12px; border-top:1px solid var(--rosa-claro); font-size:.9rem; }
+.arrow { color:var(--rosa-claro); font-weight:800; }
+.single { max-width:390px; margin:auto; }
+figcaption { color:var(--rosa-claro); font-size:.88rem; margin-top:8px; }
+pre { padding:20px; background:#103D30; border:1px solid var(--rosa-claro); border-radius:10px; overflow:auto; line-height:1.65; }
+pre code { color:var(--rosa-quase-branco); font: .92rem/1.65 ui-monospace,SFMono-Regular,Consolas,monospace; }
+.keyword { color:var(--rosa); font-weight:700; }
+.type { color:var(--rosa-claro); }
+.comment { color:#FF9CCC; font-style:italic; }
+.columns, .author-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+.columns > div, .author-card { background:var(--panel); border:1px solid var(--rosa-claro); border-radius:10px; padding:18px; }
+.columns > div:first-child { border-top:3px solid var(--rosa); }
+.columns > div:last-child { border-top:3px solid var(--rosa-claro); }
+.author-card { display:flex; align-items:center; gap:14px; overflow-wrap:anywhere; }
+.author-card p { margin:.35em 0; }
+.photo-placeholder { flex:0 0 84px; width:84px; height:100px; border:1px dashed var(--rosa-claro); background:var(--verde-escuro); display:grid; place-items:center; color:var(--rosa-quase-branco); border-radius:8px; font-size:.8rem; }
+.link-list li, .references li { margin:12px 0; }
+.link-list p { margin:3px 0 0; }
+footer { padding:26px 0 0; font-size:.9rem; overflow-wrap:anywhere; color:var(--rosa-claro); }
+@media (max-width:620px) { main { padding:24px 17px 48px; } nav { gap:15px; padding:12px 16px; } .columns,.author-grid { grid-template-columns:1fr; } .author-card { align-items:flex-start; } .schema { gap:12px; } .arrow { width:100%; text-align:center; } }
